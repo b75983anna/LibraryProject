@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
         if (bookRepository.existsByBookCode(book.getBookCode())) {
             throw new BookAlreadyExistsException(HttpStatus.CONFLICT, Constants.CODE_ALREADY_EXISTS);
         }
-        Book bookToSave = mapper.DTOToBook(book);
+        Book bookToSave = mapper.dtoToBook(book);
         Date date = new Date();
         bookToSave.setAddedOn(date);
         bookRepository.save(bookToSave);
