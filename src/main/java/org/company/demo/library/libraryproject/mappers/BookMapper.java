@@ -10,22 +10,22 @@ public class BookMapper implements BookMapperInterface {
 
     public BookDTO bookToDTO(Book book)  {
         BookDTO bookDTO = new BookDTO();
-        bookDTO.setAuthor(book.getAuthor());
         bookDTO.setBookCode(book.getBookCode());
         bookDTO.setBookName(book.getBookName());
-        bookDTO.setLocation(book.getLocation());
+        bookDTO.setAuthor(book.getAuthor());
         bookDTO.setIsRead(book.getIsRead());
+        bookDTO.setLocation(book.getLocation());
         return bookDTO;
     }
 
 
     public Book dtoToBook(BookDTO bookDTO) {
         Book book = new Book();
-        book.setAuthor(bookDTO.getAuthor());
         book.setBookCode(bookDTO.getBookCode());
         book.setBookName(bookDTO.getBookName());
-        book.setLocation(bookDTO.getLocation());
         book.setIsRead(bookDTO.getIsRead());
+        book.setAuthor(bookDTO.getAuthor());
+        book.setLocation(bookDTO.getLocation());
         return book;
     }
 }
