@@ -25,10 +25,6 @@ public class Book {
     @Column(name = "book_name")
     private String bookName;
 
-    @CreationTimestamp
-    @Column(name = "added_on", nullable = false, updatable = false)
-    private Date addedOn;
-
     @Column(name = "author_of_book")
     private String author;
 
@@ -37,5 +33,9 @@ public class Book {
 
     @Column(name="location")
     private String location;
+
+    @CreationTimestamp
+    @Column(name = "added_on", nullable = false, updatable = false)
+    private Date addedOn;
 
 }
