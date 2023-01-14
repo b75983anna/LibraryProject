@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @Setter
 @AllArgsConstructor
 
-public class BookNotFoundException extends RuntimeException{
+public class BookNotFoundException extends RuntimeException {
     final HttpStatus errorCode;
     final String message;
 }

@@ -7,16 +7,17 @@ import java.util.Optional;
 
 public interface BookService {
 
-    public BookDTO addBook(BookDTO book);
+    BookDTO addBook(BookDTO book);
 
-    public List<BookDTO> getBooks();
-    public Optional<BookDTO> getBookByCode(Integer bookCode);
+    List<BookDTO> getBooks();
 
-    public BookDTO updateBook(BookDTO book, Integer id);
+    Optional<BookDTO> getBookByCode(Integer bookCode);
 
-    public void deleteBook(Integer id);
+    BookDTO updateBook(BookDTO book, Integer id);
 
-    public List<BookDTO> getBooksByAuthor(String name);
+    void deleteBook(Integer id);
+
+    List<BookDTO> getBooksByAuthor(String name);
 
 
 }

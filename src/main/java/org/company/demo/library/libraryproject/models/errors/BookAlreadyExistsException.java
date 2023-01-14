@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookAlreadyExistsException extends RuntimeException{
+public class BookAlreadyExistsException extends RuntimeException {
 
     final HttpStatus errorCode;
     final String message;

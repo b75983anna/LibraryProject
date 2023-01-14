@@ -61,7 +61,7 @@ public class BookServiceImpl implements BookService {
                 Optional.ofNullable(mapper.bookToDTO(book)));
 
 
-        if(!bookDTO.isPresent()){
+        if (!bookDTO.isPresent()) {
             throw new BookNotFoundException(HttpStatus.NOT_FOUND, Constants.CODE_NOT_FOUND);
         }
         return bookDTO;
@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDTO updateBook(BookDTO book, Integer bookCode) {
 
-        Book updateBook = bookRepository.getBookByCode(bookCode).orElseThrow(()-> new BookNotFoundException(HttpStatus.NOT_FOUND, Constants.CODE_NOT_FOUND));
+        Book updateBook = bookRepository.getBookByCode(bookCode).orElseThrow(() -> new BookNotFoundException(HttpStatus.NOT_FOUND, Constants.CODE_NOT_FOUND));
         updateBook.setBookName(book.getBookName());
         updateBook.setAuthor(book.getAuthor());
         updateBook.setLocation(book.getLocation());
@@ -84,14 +84,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(Integer bookCode) {
 
-        Book book = bookRepository.getBookByCode(bookCode).orElseThrow( ()-> new BookNotFoundException(HttpStatus.NOT_FOUND, Constants.CODE_NOT_FOUND));
+        Book book = bookRepository.getBookByCode(bookCode).orElseThrow(() -> new BookNotFoundException(HttpStatus.NOT_FOUND, Constants.CODE_NOT_FOUND));
         bookRepository.delete(book);
 
     }
+
     @Override
-    public List<BookDTO> getBooksByAuthor(String author){
-        Optional<List<Book>> books=  bookRepository.getBooksByAuthor(author);
-        if(!books.isPresent()){
+    public List<BookDTO> getBooksByAuthor(String author) {
+        Optional<List<Book>> books = bookRepository.getBooksByAuthor(author);
+        if (!books.isPresent()) {
             throw new BookNotFoundException(HttpStatus.NOT_FOUND, Constants.NAME_NOT_FOUND);
         }
         return books.get().stream().map(book -> mapper.bookToDTO(book)).collect(Collectors.toList());

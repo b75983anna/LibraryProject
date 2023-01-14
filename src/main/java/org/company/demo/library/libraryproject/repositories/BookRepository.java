@@ -22,6 +22,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
                     "WHERE b.bookCode = :bookCode"
     )
     Optional<Book> getBookByCode(Integer bookCode);
+
     @Query(
             "SELECT b FROM Book b "
     )

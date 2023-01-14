@@ -41,7 +41,7 @@ class BookControllerTest {
     @Test
     void createNewBookTest_Success() throws Exception {
         BookDTO bookDTO = bookDTO();
-        when(bookService.addBook((BookDTO) any())).thenReturn(new BookDTO());
+        when(bookService.addBook(any())).thenReturn(new BookDTO());
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/book-create")
@@ -55,13 +55,13 @@ class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string("{\"bookCode\":null,\"bookName\":null,\"author\":null,\"location\":null,\"isRead\":null}"));
-        verify(bookService, times(1)).addBook((BookDTO) any());
+        verify(bookService, times(1)).addBook(any());
     }
 
     @Test
     void createNewBookTest_Invalid() throws Exception {
         BookDTO bookDTO = bookDTO();
-        when(bookService.addBook((BookDTO) any())).thenReturn(null);
+        when(bookService.addBook(any())).thenReturn(null);
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/book-create")
@@ -78,7 +78,7 @@ class BookControllerTest {
     @Test
     void createNewBookTest_Throw1() throws Exception {
         BookDTO bookDTO = bookDTO();
-        when(bookService.addBook((BookDTO) any())).thenThrow(new HttpClientErrorException(HttpStatus.CONTINUE));
+        when(bookService.addBook(any())).thenThrow(new HttpClientErrorException(HttpStatus.CONTINUE));
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/book-create")
@@ -97,7 +97,7 @@ class BookControllerTest {
     void updateBookTest() throws Exception {
         BookDTO bookDTO = bookDTO();
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
-        when(bookService.updateBook((BookDTO) any(), anyInt())).thenReturn(new BookDTO());
+        when(bookService.updateBook(any(), anyInt())).thenReturn(new BookDTO());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/book/{bookCode}", 100)
                 .contentType(MediaType.APPLICATION_JSON)

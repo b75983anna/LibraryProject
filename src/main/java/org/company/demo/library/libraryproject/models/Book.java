@@ -16,10 +16,10 @@ import java.util.Date;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
 
-    @Column(name="book_code")
+    @Column(name = "book_code")
     private Integer bookCode;
 
     @Column(name = "book_name")
@@ -28,10 +28,10 @@ public class Book {
     @Column(name = "author_of_book")
     private String author;
 
-    @Column(name="is_read")
+    @Column(name = "is_read")
     private Boolean isRead;
 
-    @Column(name="location")
+    @Column(name = "location")
     private String location;
 
     @CreationTimestamp

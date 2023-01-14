@@ -26,7 +26,7 @@ public class BookController {
         try {
             List<BookDTO> books = bookService.getBooks();
 
-            if ( books.isEmpty()) {
+            if (books.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
@@ -59,7 +59,6 @@ public class BookController {
     }
 
 
-
     @DeleteMapping("/book/{bookCode}")
     public ResponseEntity<Book> deleteBook(@PathVariable @NotNull Integer bookCode) {
         try {
@@ -71,10 +70,10 @@ public class BookController {
     }
 
     @GetMapping("/books-by-author/{author}")
-    public ResponseEntity<List<BookDTO>> getBooksByAuthor(@PathVariable @NotNull  String author) {
+    public ResponseEntity<List<BookDTO>> getBooksByAuthor(@PathVariable @NotNull String author) {
         try {
             List<BookDTO> books = bookService.getBooksByAuthor(author);
-            if(books.isEmpty()){
+            if (books.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(books, HttpStatus.OK);
@@ -83,20 +82,20 @@ public class BookController {
         }
 
     }
+
     @PutMapping("/book/{bookCode}")
     public ResponseEntity<BookDTO> updateBook(@Valid @RequestBody BookDTO bookDTO, @PathVariable @NotNull Integer bookCode) {
         try {
             BookDTO updatedBookDTO = bookService.updateBook(bookDTO, bookCode);
-            if (updatedBookDTO==null){
+            if (updatedBookDTO == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(updatedBookDTO, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
-
 
 
 }
