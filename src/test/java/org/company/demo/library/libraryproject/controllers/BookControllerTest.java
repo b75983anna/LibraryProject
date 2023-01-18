@@ -1,6 +1,7 @@
 package org.company.demo.library.libraryproject.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.company.demo.library.libraryproject.TestUtil;
 import org.company.demo.library.libraryproject.dto.BookDTO;
 import org.company.demo.library.libraryproject.models.errors.BookNotFoundException;
 import org.company.demo.library.libraryproject.services.interfaces.BookService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -19,10 +21,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.company.demo.library.libraryproject.TestUtil.bookDTO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {BookController.class})
 @ExtendWith(SpringExtension.class)
@@ -41,7 +48,7 @@ class BookControllerTest {
     @Test
     void createNewBookTest_Success() throws Exception {
         BookDTO bookDTO = bookDTO();
-        when(bookService.addBook(any())).thenReturn(new BookDTO());
+        when(bookService.addBook((BookDTO) any())).thenReturn(new BookDTO());
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/book-create")
@@ -51,17 +58,17 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string("{\"bookCode\":null,\"bookName\":null,\"author\":null,\"location\":null,\"isRead\":null}"));
-        verify(bookService, times(1)).addBook(any());
+        verify(bookService, times(1)).addBook((BookDTO) any());
     }
 
     @Test
     void createNewBookTest_Invalid() throws Exception {
         BookDTO bookDTO = bookDTO();
-        when(bookService.addBook(any())).thenReturn(null);
+        when(bookService.addBook((BookDTO) any())).thenReturn(null);
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/book-create")
@@ -71,14 +78,14 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().is(409));
+                .andExpect(status().is(409));
         verify(bookService, times(0)).addBook(bookDTO);
     }
 
     @Test
     void createNewBookTest_Throw1() throws Exception {
         BookDTO bookDTO = bookDTO();
-        when(bookService.addBook(any())).thenThrow(new HttpClientErrorException(HttpStatus.CONTINUE));
+        when(bookService.addBook((BookDTO) any())).thenThrow(new HttpClientErrorException(HttpStatus.CONTINUE));
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/book-create")
@@ -88,7 +95,7 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().is(409));
+                .andExpect(status().is(409));
         verify(bookService, times(0)).addBook(bookDTO);
 
     }
@@ -97,7 +104,7 @@ class BookControllerTest {
     void updateBookTest() throws Exception {
         BookDTO bookDTO = bookDTO();
         String content = (new ObjectMapper()).writeValueAsString(bookDTO);
-        when(bookService.updateBook(any(), anyInt())).thenReturn(new BookDTO());
+        when(bookService.updateBook((BookDTO) any(), anyInt())).thenReturn(new BookDTO());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/book/{bookCode}", 100)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +113,7 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
 
     }
@@ -126,7 +133,7 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+                .andExpect(status().is4xxClientError());
         verify(bookService, times(0)).updateBook(bookDTO, bookDTO.getBookCode());
 
     }
@@ -139,7 +146,7 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -150,18 +157,49 @@ class BookControllerTest {
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().is(500));
+                .andExpect(status().is(500));
     }
 
     @Test
     void deleteBookTest() throws Exception {
         doNothing().when(bookService).deleteBook(anyInt());
         MockHttpServletRequestBuilder deleteResult = MockMvcRequestBuilders
-                .delete("/book/{bookCode}", 1)
-                .characterEncoding("Encoding"); //????????
+                .delete("/book/{bookCode}", 1);
         MockMvcBuilders.standaloneSetup(bookController)
                 .build()
                 .perform(deleteResult)
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+                .andExpect(status().isNoContent());
     }
+
+    @Test
+    void getAllBooksTest_Success() {
+        List<BookDTO> books = TestUtil.dtoList();
+        when(bookService.getBooks()).thenReturn(books);
+
+        ResponseEntity<List<BookDTO>> response = bookController.getAllBooks();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(books, response.getBody());
+    }
+
+    @Test
+    void getAllBooksTest_Throw() {
+        when(bookService.getBooks()).thenThrow(new RuntimeException());
+
+        ResponseEntity<List<BookDTO>> response = bookController.getAllBooks();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void getBookByCodeTest_Success() throws Exception {
+        BookDTO bookDTO = new BookDTO();
+        when(bookService.getBookByCode(1)).thenReturn(Optional.of(bookDTO));
+        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/book/1");
+        MockMvcBuilders.standaloneSetup(bookController)
+                .build()
+                .perform(getResult)
+                .andExpect(status().isOk());
+    }
+
 }
