@@ -34,7 +34,7 @@ class BookControllerIntegrationTest {
     BookController bookController;
 
     @Test
-    void test(){
+    void test() {
         assertThat(bookController).isNotNull();
     }
 
@@ -42,13 +42,14 @@ class BookControllerIntegrationTest {
     @Order(1)
     @Test
     void getAllBooksIntFailTest() throws JSONException, org.json.JSONException {
-        String response = this.restTemplate.getForObject("/books", String.class );
+        String response = this.restTemplate.getForObject("/books", String.class);
         JSONAssert.assertNotEquals("[{bookCode:1}, {bookCode:2}]", response, false);
     }
+
     @Order(2)
     @Test
     void getAllBooksIntTest() throws JSONException, org.json.JSONException {
-        String response = this.restTemplate.getForObject("/books", String.class );
+        String response = this.restTemplate.getForObject("/books", String.class);
         JSONAssert.assertEquals("[\n" +
                 "    {\n" +
                 "        \"bookCode\": 7432,\n" +
@@ -69,7 +70,7 @@ class BookControllerIntegrationTest {
 
     @Order(3)
     @Test
-    void return404AllBooksNotFound_incorrectURL(){
+    void return404AllBooksNotFound_incorrectURL() {
         ResponseEntity<String> err = restTemplate.getForEntity("/book", String.class);
         assertEquals(HttpStatus.NOT_FOUND, err.getStatusCode());
     }
@@ -77,9 +78,10 @@ class BookControllerIntegrationTest {
     @Order(4)
     @Test
     void getBookIntTest() throws JSONException {
-        ResponseEntity<String> response = this.restTemplate.getForEntity("/book/{bookCode}", String.class, 7432 );
+        ResponseEntity<String> response = this.restTemplate.getForEntity("/book/{bookCode}", String.class, 7432);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
     @Order(5)
     @Test
     void getBookIntTest_NotExistingId() throws JSONException {
@@ -87,7 +89,6 @@ class BookControllerIntegrationTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, err.getStatusCode());
 
     }
-
 
 
     @Order(6)
@@ -100,10 +101,11 @@ class BookControllerIntegrationTest {
         bookDTO.setLocation("Test Location");
         bookDTO.setIsRead(true);
 
-        ResponseEntity<BookDTO> responseEntity = this.restTemplate.postForEntity("/book-create", bookDTO, BookDTO.class );
+        ResponseEntity<BookDTO> responseEntity = this.restTemplate.postForEntity("/book-create", bookDTO, BookDTO.class);
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()));
     }
+
     @Order(7)
     @Test
     void createNewBookIntTest_incorrectInputCodeNull() throws JSONException {
@@ -112,7 +114,7 @@ class BookControllerIntegrationTest {
         bookDTO.setAuthor("Test Author");
         bookDTO.setLocation("Test Location");
         bookDTO.setIsRead(true);
-        ResponseEntity<BookDTO> responseEntity = this.restTemplate.postForEntity("/book-create", bookDTO, BookDTO.class );
+        ResponseEntity<BookDTO> responseEntity = this.restTemplate.postForEntity("/book-create", bookDTO, BookDTO.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
@@ -125,14 +127,14 @@ class BookControllerIntegrationTest {
         bookDTO.setAuthor("Test Author 2");
         bookDTO.setLocation("Test Location 2");
         bookDTO.setIsRead(true);
-        ResponseEntity<BookDTO> responseEntity = this.restTemplate.postForEntity("/book-create", bookDTO, BookDTO.class );
+        ResponseEntity<BookDTO> responseEntity = this.restTemplate.postForEntity("/book-create", bookDTO, BookDTO.class);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
     @Order(9)
     @Test
     void getBooksByAuthorIntTest() throws JSONException, org.json.JSONException {
-        String response = this.restTemplate.getForObject("/books-by-author/{name}", String.class, "Test Author" );
+        String response = this.restTemplate.getForObject("/books-by-author/{name}", String.class, "Test Author");
         JSONAssert.assertEquals("[\n" +
                 "    {\n" +
                 "        \"bookCode\": 9001,\n" +
@@ -146,7 +148,7 @@ class BookControllerIntegrationTest {
 
     @Order(10)
     @Test
-    void getBooksByAuthorIntTest_BadUrlAuthor(){
+    void getBooksByAuthorIntTest_BadUrlAuthor() {
         ResponseEntity<String> err = restTemplate.getForEntity("/books-by-author/{name}", String.class, "Anything");
         assertEquals(HttpStatus.NOT_FOUND, err.getStatusCode());
     }
@@ -161,10 +163,11 @@ class BookControllerIntegrationTest {
         bookDTO.setLocation("Test Location");
         bookDTO.setIsRead(true);
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<BookDTO> entity = new HttpEntity<BookDTO>(bookDTO,headers);
-        ResponseEntity<BookDTO> responseEntity =this.restTemplate.exchange("/book/9001", HttpMethod.PUT, entity, BookDTO.class, bookDTO);
+        HttpEntity<BookDTO> entity = new HttpEntity<BookDTO>(bookDTO, headers);
+        ResponseEntity<BookDTO> responseEntity = this.restTemplate.exchange("/book/9001", HttpMethod.PUT, entity, BookDTO.class, bookDTO);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
     @Order(12)
     @Test
     void updateBookIntTest_badCode() throws JSONException {
@@ -174,8 +177,8 @@ class BookControllerIntegrationTest {
         bookDTO.setLocation("Test Location");
         bookDTO.setIsRead(true);
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<BookDTO> entity = new HttpEntity<BookDTO>(bookDTO,headers);
-        ResponseEntity<BookDTO> responseEntity =this.restTemplate.exchange("/book/-5", HttpMethod.PUT, entity, BookDTO.class, bookDTO);
+        HttpEntity<BookDTO> entity = new HttpEntity<BookDTO>(bookDTO, headers);
+        ResponseEntity<BookDTO> responseEntity = this.restTemplate.exchange("/book/-5", HttpMethod.PUT, entity, BookDTO.class, bookDTO);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
@@ -188,14 +191,14 @@ class BookControllerIntegrationTest {
         bookDTO.setLocation("Test Location");
         bookDTO.setIsRead(true);
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<BookDTO> entity = new HttpEntity<BookDTO>(bookDTO,headers);
-        ResponseEntity<BookDTO> responseEntity =this.restTemplate.exchange("/book/20000", HttpMethod.PUT, entity, BookDTO.class, bookDTO);
+        HttpEntity<BookDTO> entity = new HttpEntity<BookDTO>(bookDTO, headers);
+        ResponseEntity<BookDTO> responseEntity = this.restTemplate.exchange("/book/20000", HttpMethod.PUT, entity, BookDTO.class, bookDTO);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
     @Order(14)
     @Test
-    void deleteBook(){
+    void deleteBook() {
         this.restTemplate.delete("/book/9001");
         ResponseEntity<String> list = restTemplate.getForEntity("/book/9001", String.class);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, list.getStatusCode());
